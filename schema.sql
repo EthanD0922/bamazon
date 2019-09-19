@@ -26,4 +26,4 @@ INSERT INTO inventory (name, department, price, in_stock)
         ("Men's Pajama Pants", "Clothing", 6.99, 50),
         ("Women's Bootcut Jeans", "Clothing", 14.99, 50),
         ("Toothpaste", "Home", 13.99, 50),
-        ("Toothbrush", "Home", 5.99, 50)
+        ("Toothbrush", "Home", 5.99, 50);
