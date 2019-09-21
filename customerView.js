@@ -35,11 +35,11 @@ function startApp(){
         }
         console.log(columnify(items, {columnSplitter: ' | '}))
     
-        mainMenu()
+        mainMenuCustomer()
     })
 };
 
-function mainMenu(){
+function mainMenuCustomer(){
     inquirer.prompt([{
         type: "list",
         message: "Welcome to Bamazon valued customer. What can i get for you today?",
@@ -51,6 +51,31 @@ function mainMenu(){
         connection.query("SELECT * FROM inventory WHERE name = ?", selection, function(err, res){
             if (err) throw err;
             console.log(columnify(res, {columnSplitter: ' | '}))
+            buyAmount(res)
         })
     })
 } 
+function buyAmount(data){
+    inquirer.prompt([{
+                type: "input",
+                message: "How many would you like to buy?",
+                name: "buyItem"
+            }]).then(function(response){
+                if(response.buyItem > data[0].in_stock){
+                    console.log("Sorry we dont have that many.");
+                    buyAmount(data[0]);
+                }
+                else{
+                    var newAmount = data[0].in_stock - response.buyItem;
+                    var cost = data[0].price * response.buyItem;
+                    connection.query("UPDATE inventory SET ? WHERE ?", [
+                        {in_stock: newAmount},
+                        {id: data[0].id}],
+                    function(err, res){
+                        if(err) throw err;
+                        console.log("Your total was: $" + cost);
+                        mainMenuCustomer();
+                    })
+                }
+            })
+}
