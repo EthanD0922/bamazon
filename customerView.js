@@ -31,7 +31,7 @@ connection.connect(function(err){
 function startApp(){
     connection.query("SELECT * FROM inventory", function(err, res){
         for (var i = 0; i < res.length; i ++){
-        items.push({id: res[i].id, name: res[i].name, department: res[i].department, price:res[i].price, stock:res[i].in_stock})
+        items.push({id: res[i].id, name: res[i].name, department: res[i].department, price:res[i].price})
         }
         console.log(columnify(items, {columnSplitter: ' | '}))
     
