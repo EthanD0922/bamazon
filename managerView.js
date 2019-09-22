@@ -49,7 +49,7 @@ function startApp(){
                 break;
 
             case "Add To Inventory":
-                addInventory();
+                selectInventory();
                 break;
 
             case "Add New Product":
@@ -66,18 +66,63 @@ function startApp(){
 function viewProducts(){
     connection.query("SELECT * FROM inventory", function(err, res){
         for (var i = 0; i < res.length; i ++){
-        items.push({id: res[i].id, name: res[i].name, department: res[i].department, price:res[i].price, stock:res[i].in_stock})
+            items.push({id: res[i].id, name: res[i].name, department: res[i].department, price:res[i].price, stock:res[i].in_stock})
         }
         console.log(columnify(items, {columnSplitter: ' | '}))
+        returnToMain();
     })
 }
 
 function viewLow(){
+    connection.query("SELECT * FROM inventory WHERE in_stock <= 10", function(err, res){
+        var lowInv = []
+        for (var i = 0; i <res.length; i ++ ){
+            lowInv.push({id: res[i].id, name: res[i].name, department: res[i].department, price:res[i].price, stock:res[i].in_stock})
+        }
+        console.log(columnify(lowInv, {columnSplitter: ' | '}))
+        returnToMain();
+    })
 
 }
 
-function addInventory(){
+function selectInventory(){
+    viewProducts();
+    inquirer.prompt([{
+        type: "list",
+        message: "Which Product can we order more of?",
+        choices: items,
+        name: "addInv"
+    }]).then(function(res){
+        var selection = res.addInv
 
+        connection.query("SELECT * FROM inventory WHERE name = ?", selection, function(err, res){
+            if (err) throw err;
+            console.log(columnify(res, {columnSplitter: ' | '}))
+            addInventory(res);
+        })
+    })
+}
+
+function addInventory(){
+    inquirer.prompt([
+        {
+            type: "input",
+            message: "How many would you like to order?",
+            name: "orderCount"
+        }
+    ]).then(function(response){
+        
+        var newAmount = data[0].in_stock - response.orderCount;
+        
+        connection.query("UPDATE inventory SET ? WHERE ?", [
+            {in_stock: newAmount},
+            {id: data[0].id}],
+        function(err, res){
+            if(err) throw err;
+            console.log(response.orderCount + " of " + data[0].name + " have been order. We will have " + newAmount + " total.");
+            returnToMain();
+        })
+    })
 }
 
 function addProducts(){
