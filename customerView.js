@@ -4,7 +4,7 @@ var inquirer = require("inquirer");
 
 var columnify = require("columnify");
         
-var items = []
+var items
 
 var connection = mysql.createConnection({
     host: "localhost",
@@ -29,6 +29,7 @@ connection.connect(function(err){
 });
 
 function startApp(){
+    items = []
     connection.query("SELECT * FROM inventory", function(err, res){
         for (var i = 0; i < res.length; i ++){
         items.push({id: res[i].id, name: res[i].name, department: res[i].department, price:res[i].price})
@@ -50,11 +51,14 @@ function mainMenuCustomer(){
 
         connection.query("SELECT * FROM inventory WHERE name = ?", selection, function(err, res){
             if (err) throw err;
-            console.log(columnify(res, {columnSplitter: ' | '}))
+            var cusotmerChoice = []
+            cusotmerChoice.push({name: res[0].name, department: res[0].department, price:res[0].price})
+            console.log(columnify(cusotmerChoice , {columnSplitter: ' | '}))
             buyAmount(res)
         })
     })
 } 
+
 function buyAmount(data){
     inquirer.prompt([{
                 type: "input",
@@ -68,14 +72,34 @@ function buyAmount(data){
                 else{
                     var newAmount = data[0].in_stock - response.buyItem;
                     var cost = data[0].price * response.buyItem;
+                    var newSales = data[0].product_sales + cost;
                     connection.query("UPDATE inventory SET ? WHERE ?", [
-                        {in_stock: newAmount},
+                        {in_stock: newAmount, product_sales: newSales},
                         {id: data[0].id}],
                     function(err, res){
                         if(err) throw err;
+                        console.log(newSales, data[0].product_sales)
                         console.log("Your total was: $" + cost);
-                        mainMenuCustomer();
+                        returnToMain();
                     })
                 }
             })
+}
+
+function returnToMain(){
+    inquirer.prompt([
+        {
+            type: "confirm",
+            message: "Would you like to return to the Menu?",
+            name: "menu",
+            default: true
+        }
+    ]).then(function(res){
+        if (res.menu){
+            startApp();
+        }
+        else{
+            connection.end();
+        }
+    })
 }

@@ -9,9 +9,10 @@ CREATE TABLE inventory (
     name VARCHAR(30) NOT NULL,
     department VARCHAR(30) NOT NULL,
     price DECIMAL(10, 2) NOT NULL,
-    in_stock INT(10) NOT NULL, 
+    in_stock INT(10) NOT NULL,
+    product_sales INT, 
     PRIMARY KEY(id)
-) 
+);
 
 INSERT INTO inventory (name, department, price, in_stock)
     values
@@ -27,3 +28,19 @@ INSERT INTO inventory (name, department, price, in_stock)
         ("Women's Bootcut Jeans", "Clothing", 14.99, 50),
         ("Toothpaste", "Home", 13.99, 50),
         ("Toothbrush", "Home", 5.99, 50);
+
+
+CREATE TABLE department (
+    id INT NOT NULL AUTO_INCREMENT,
+    department_name VARCHAR(30) NOT NULL, 
+    over_head INT NOT NULL, 
+    product_sales INT NOT NULL, 
+    PRIMARY KEY(id) 
+);
+
+INSERT INTO department  (department_name, over_head, product_sales)
+                values  ("Electronics", 3000, 5000),
+                        ("Grocery", 2566, 3045),
+                        ("Book", 1203, 1798),
+                        ("Clothing", 1407, 1645),
+                        ("Home", 1234, 2345);

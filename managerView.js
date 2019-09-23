@@ -53,7 +53,7 @@ function startApp(){
                 break;
 
             case "Add New Product":
-                addProduct();
+                addProducts();
                 break;
 
             case "Exit":
@@ -86,7 +86,11 @@ function viewLow(){
 }
 
 function selectInventory(){
-    viewProducts();
+    connection.query("SELECT * FROM inventory", function(err, res){
+        for (var i = 0; i < res.length; i ++){
+            items.push({id: res[i].id, name: res[i].name, department: res[i].department, price:res[i].price, stock:res[i].in_stock})
+        }
+    
     inquirer.prompt([{
         type: "list",
         message: "Which Product can we order more of?",
@@ -99,11 +103,12 @@ function selectInventory(){
             if (err) throw err;
             console.log(columnify(res, {columnSplitter: ' | '}))
             addInventory(res);
-        })
-    })
+        });
+    });
+});
 }
 
-function addInventory(){
+function addInventory(data){
     inquirer.prompt([
         {
             type: "input",
@@ -112,7 +117,7 @@ function addInventory(){
         }
     ]).then(function(response){
         
-        var newAmount = data[0].in_stock - response.orderCount;
+        var newAmount = data[0].in_stock + response.orderCount;
         
         connection.query("UPDATE inventory SET ? WHERE ?", [
             {in_stock: newAmount},
@@ -126,6 +131,41 @@ function addInventory(){
 }
 
 function addProducts(){
+    inquirer.prompt([
+        {
+            type:"input",
+            message: "What product would you like to add?",
+            name: "productName"
+        },
+        {
+            type:"input",
+            message: "What department is this product for?",
+            name: "departmentName"
+        },
+        {
+            type:"input",
+            message: "How much will it cost??",
+            name: "productPrice"
+        },
+        {
+            type:"input",
+            message: "How many should we order??",
+            name: "orderAmount"
+        }
+    ]).then(function(res){
+        connection.query("INSERT INTO inventory SET ?",
+        {
+            name: res.productName,
+            department: res.departmentName,
+            price: res.productPrice,
+            in_stock: res.orderAmount
+        },
+        function(err, response){
+            if(err) throw err;
+            console.log(res.productName + " has been added to our stock.")
+            returnToMain();
+        })
+    })
 
 }
 
@@ -133,7 +173,7 @@ function returnToMain(){
     inquirer.prompt([
         {
             type: "confirm",
-            message: "Would you like to return to the Menu or exit?",
+            message: "Would you like to return to the Menu?",
             name: "menu",
             default: true
         }
