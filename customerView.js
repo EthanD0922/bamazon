@@ -78,7 +78,6 @@ function buyAmount(data){
                         {id: data[0].id}],
                     function(err, res){
                         if(err) throw err;
-                        console.log(newSales, data[0].product_sales)
                         console.log("Your total was: $" + cost);
                         returnToMain();
                     })
