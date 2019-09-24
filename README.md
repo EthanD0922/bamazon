@@ -1,4 +1,4 @@
-# bamazon
+# Bamazon
 
 This app was made to mock an online shopping service cleverly named Bamazon. This is a CLI App that has three different view points of the
 store, Customer, Manager, and Supervisor. This three different views give the user the ability to change the inventory and sales of the store
@@ -38,14 +38,15 @@ Once the user has completed a request to the database, the app will ask if the u
 to return or 'no' to exit the app. 
 
 ## Examples
+-----------
 
-##Customer View
+#### Customer View
 
 ![customerView](gifs/customerView.gif)
 
-##Manager View
+#### Manager View
 
 ![managerView](gifs/managerView.gif)
 
-##Supervisor View
+#### Supervisor View
 ![supervisorView](gifs/supervisorView.gif)
