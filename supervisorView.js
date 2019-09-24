@@ -88,6 +88,7 @@ function newDepartment(){
         connection.query("INSERT INTO department (department_name, over_head, product_sales) values( ?, ?, 0)", [res.depName, res.depOH],function(err, response){
             if (err) throw err;
             console.log(res.depName + " has been added to Bamazon")
+            departments.push(res.depName)
             returnToMain();
         })
     })

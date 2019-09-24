@@ -26,7 +26,7 @@ connection.connect(function(err){
     if (err) throw err;
 
     console.log("Connected as id " + connection.threadId)
-    
+
     connection.query("SELECT department_name FROM department", function(err, res){
         for( var i = 0; i <res.length; i ++){
             departments.push(res[i].department_name)
@@ -126,7 +126,7 @@ function addInventory(data){
         }
     ]).then(function(response){
         
-        var newAmount = data[0].in_stock + response.orderCount;
+        var newAmount = parseInt(data[0].in_stock) + parseInt(response.orderCount);
         
         connection.query("UPDATE inventory SET ? WHERE ?", [
             {in_stock: newAmount},
