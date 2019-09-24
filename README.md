@@ -39,11 +39,13 @@ to return or 'no' to exit the app.
 
 ## Examples
 
-###Customer View
+##Customer View
+
 ![customerView](gifs/customerView.gif)
 
-###Manager View
+##Manager View
+
 ![managerView](gifs/managerView.gif)
 
-###Supervisor View
+##Supervisor View
 ![supervisorView](gifs/supervisorView.gif)
