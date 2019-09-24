@@ -6,6 +6,8 @@ var columnify = require("columnify");
         
 var items = []
 
+var departments = []
+
 var connection = mysql.createConnection({
     host: "localhost",
   
@@ -24,11 +26,18 @@ connection.connect(function(err){
     if (err) throw err;
 
     console.log("Connected as id " + connection.threadId)
-
+    
+    connection.query("SELECT department_name FROM department", function(err, res){
+        for( var i = 0; i <res.length; i ++){
+            departments.push(res[i].department_name)
+        }
+    })
+    
     startApp();
 });
 
 function startApp(){
+    
     inquirer.prompt([
         {
             type: "list",
@@ -36,7 +45,7 @@ function startApp(){
             choices: ["View Products", "View Low Inventory", "Add To Inventory", "Add New Product"],
             name: "manager"
         }
-])  .then(function(res){
+    ]).then(function(res){
     var selection = res.manager
 
         switch (selection){
@@ -138,8 +147,9 @@ function addProducts(){
             name: "productName"
         },
         {
-            type:"input",
+            type:"list",
             message: "What department is this product for?",
+            choices: departments,
             name: "departmentName"
         },
         {
